@@ -10,6 +10,8 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
 import AddProduct from "../molecules/AddProduct";
+import { NoProducts } from "../../assets/icons/CustomIcons";
+import NoProductsFound from "../molecules/NoProductsFound";
 
 const Home = () => {
   const productStore = useAppSelector((state) => state.products);
@@ -58,19 +60,21 @@ const Home = () => {
       >
         <AddIcon /> Add a product
       </Button>
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "2rem",
-          justifyContent: "center",
-          marginTop: "2rem",
-        }}
-      >
-        {productStore.products.map((product) => (
-          <ProductCard key={`product_${product.id}`} product={product} />
-        ))}
-      </Box>
+      {(productStore.products.length > 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "2rem",
+            justifyContent: "center",
+            marginTop: "2rem",
+          }}
+        >
+          {productStore.products.map((product) => (
+            <ProductCard key={`product_${product.id}`} product={product} />
+          ))}
+        </Box>
+      )) || <NoProductsFound />}
       <AddProduct open={open} handleClose={handleClose} />
     </SignInContainer>
   );

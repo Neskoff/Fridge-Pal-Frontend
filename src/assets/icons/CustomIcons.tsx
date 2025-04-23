@@ -164,3 +164,50 @@ export function FridgePalIconWide() {
     </SvgIcon>
   );
 }
+
+export const NoProducts = () => {
+  return (
+    <SvgIcon sx={{ height: 300, width: 300 }}>
+      <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+        <text
+          x="200"
+          y="40"
+          textAnchor="middle"
+          fontFamily="Arial, sans-serif"
+          fontSize="18"
+          fontWeight="bold"
+          fill="white"
+        >
+          No products yet.
+        </text>
+        <text
+          x="200"
+          y="65"
+          textAnchor="middle"
+          fontFamily="Arial, sans-serif"
+          fontSize="14"
+          fill="white"
+        >
+          Please add a product to display.
+        </text>
+
+        <circle
+          cx="200"
+          cy="130"
+          r="30"
+          fill="none"
+          stroke="white"
+          strokeWidth="3"
+        />
+        <circle cx="190" cy="120" r="4" fill="white" />
+        <circle cx="210" cy="120" r="4" fill="white" />
+        <path
+          d="M185 145 Q200 130 215 145"
+          fill="none"
+          stroke="white"
+          strokeWidth="3"
+        />
+      </svg>
+    </SvgIcon>
+  );
+};
