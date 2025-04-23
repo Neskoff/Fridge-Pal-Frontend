@@ -130,7 +130,7 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
               required
             >
               <MenuItem value="FRUITS">Fruit</MenuItem>
-              <MenuItem value="vegetable">Vegetable</MenuItem>
+              <MenuItem value="VEGETABLES">Vegetable</MenuItem>
             </Select>
           </FormControl>
 
@@ -142,8 +142,9 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
               label="Quantity Type"
               required
             >
-              <MenuItem value="KILOGRAM">Kilograms</MenuItem>
-              <MenuItem value="pcs">Pieces</MenuItem>
+              <MenuItem value="KILOGRAM">Kilogram</MenuItem>
+              <MenuItem value="PIECE">Piece</MenuItem>
+              <MenuItem value="LITER">Liter</MenuItem>
             </Select>
           </FormControl>
 
