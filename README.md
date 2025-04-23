@@ -1,46 +1,73 @@
-# Getting Started with Create React App
+# 🧊 FridgePal Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the frontend for **FridgePal**, a web application that helps users track items in their fridge using images. Built with React, this app provides an intuitive user interface for uploading images, managing fridge items, tracking expiration dates, and exploring recipe suggestions.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🛠 Tech Stack
 
-### `npm start`
+- **Language:** JavaScript / TypeScript
+- **Framework:** React (v18+)
+- **State Management:** Context API / Redux
+- **HTTP Client:** Axios / Fetch
+- **Routing:** React Router (v6+)
+- **Authentication:** JWT stored in localStorage
+- **API Docs Consumption:** Swagger-generated types
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🚀 Features
 
-### `npm test`
+- 🖼️ Image Upload for Fridge Item Detection
+- 📦 View, Add, Edit & Delete Fridge Items
+- 🗓️ Track Expiration Dates
+- 🔐 User Authentication & Session Management
+- ⚙️ Responsive UI for Mobile & Desktop
+- 🔄 Integration with the FridgePal Backend API
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🚀 Running Locally
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. **Set up environment variables:**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   Copy the example file and configure your own environment:
 
-### `npm run eject`
+   ```bash
+   cp .env.example .env
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+   Fill in the required variables:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```
+   REACT_APP_API_URL=
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+2. **Install dependencies:**
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+   ```bash
+   npm install
+   ```
 
-## Learn More
+3. **Run the app:**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```bash
+   npm run start
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   The app will be available at [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🔐 Authentication
+
+This app uses JWT tokens issued by the backend. After login or signup, the token is stored in `localStorage` and sent along with each API request via the `Authorization` header.
+
+---
+
+## 📚 API Documentation
+
+All backend endpoints are documented via Swagger and can be explored here:
+
+🔗 [FridgePal Swagger UI](https://fridge-pal-backend.onrender.com/swagger-ui/index.html)
