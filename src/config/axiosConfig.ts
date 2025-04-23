@@ -14,7 +14,13 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error).then(() => console.log(error)),
+  (error) => {
+    if (error.response.status === 403) {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+      return Promise.reject(error);
+    }
+  },
 );
 
 export default apiClient;
