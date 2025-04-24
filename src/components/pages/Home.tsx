@@ -10,33 +10,34 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
 import AddProduct from "../molecules/AddProduct";
-import { NoProducts } from "../../assets/icons/CustomIcons";
 import NoProductsFound from "../molecules/NoProductsFound";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 const Home = () => {
   const productStore = useAppSelector((state) => state.products);
   const dispatch = useAppDispatch();
+  const [expired, setExpired] = useState(false);
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
   };
 
   useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
+    dispatch(getProducts(expired));
+  }, [expired]);
 
-  const SignInContainer = styled(Box)(({ theme }) => ({
+  const HomeContainer = styled(Box)(({ theme }) => ({
     minHeight: "100vh",
     height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
     padding: theme.spacing(2),
-    position: "relative", // Ensure that the ::before element is positioned relative to this container
+    position: "relative",
     [theme.breakpoints.up("sm")]: {
       padding: theme.spacing(4),
     },
     "&::before": {
       content: '""',
       display: "block",
-      position: "fixed", // Fix it to the viewport
+      position: "fixed",
       zIndex: -1,
       inset: 0,
       backgroundImage:
@@ -50,16 +51,26 @@ const Home = () => {
   }));
 
   return (
-    <SignInContainer>
+    <HomeContainer>
       <Navbar />
-      <Button
-        sx={{ marginTop: "1rem", padding: "1.5rem 2rem" }}
-        variant="outlined"
-        color="primary"
-        onClick={() => setOpen(true)}
-      >
-        <AddIcon /> Add a product
-      </Button>
+      <Box sx={{ gap: "1rem" }} display="flex">
+        <Button
+          sx={{ marginTop: "1rem", padding: "1.5rem 2rem" }}
+          variant="outlined"
+          color="primary"
+          onClick={() => setOpen(true)}
+        >
+          <AddIcon /> Add a product
+        </Button>
+        <Button
+          sx={{ marginTop: "1rem", padding: "1.5rem 2rem" }}
+          variant={expired ? "contained" : "outlined"}
+          color={expired ? "error" : "primary"}
+          onClick={() => setExpired(!expired)}
+        >
+          <FilterAltIcon /> Filter Expired
+        </Button>
+      </Box>
       {(productStore.products.length > 0 && (
         <Box
           sx={{
@@ -76,7 +87,7 @@ const Home = () => {
         </Box>
       )) || <NoProductsFound />}
       <AddProduct open={open} handleClose={handleClose} />
-    </SignInContainer>
+    </HomeContainer>
   );
 };
 

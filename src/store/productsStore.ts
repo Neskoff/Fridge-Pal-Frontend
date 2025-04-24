@@ -5,16 +5,16 @@ import {
   deleteProductApi,
   getProductsApi,
   updateProductImageApi,
-} from "../services/UserService";
+} from "../services/productService";
 import { AxiosError } from "axios";
 import { ProductRequest } from "../types/ProductRequest";
 import { UpdateProductImageRequest } from "../types/UpdateProductImageRequest";
 
 export const getProducts = createAsyncThunk(
   "products/getProducts",
-  async (_, { rejectWithValue }) => {
+  async (expired: boolean, { rejectWithValue }) => {
     try {
-      return getProductsApi();
+      return getProductsApi(expired);
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(

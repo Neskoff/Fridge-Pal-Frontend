@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -62,13 +62,21 @@ export default function ProductCard({ product }: ProductCardProps) {
   );
   const dispatch = useAppDispatch();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleProductDelete = () => {
+    setIsLoading(true);
     dispatch(deleteProduct(product.id))
       .unwrap()
-      .then(() => handleClose())
-      .catch((e) => toast.error(e));
+      .then(() => {
+        setIsLoading(false);
+        handleClose();
+      })
+      .catch((e) => {
+        setIsLoading(false);
+        toast.error(e);
+      });
   };
-
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -170,6 +178,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         open={open}
         handleClose={handleClose}
         handleDelete={handleProductDelete}
+        loading={isLoading}
       />
     </Card>
   );

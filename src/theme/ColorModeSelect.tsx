@@ -8,7 +8,7 @@ import BedtimeIcon from "@mui/icons-material/Bedtime";
 export default function ColorModeSelect(props: SelectProps) {
   const { mode, setMode } = useColorScheme();
   if (!mode) {
-    return null;
+    setMode("dark");
   }
   return (
     <Select
