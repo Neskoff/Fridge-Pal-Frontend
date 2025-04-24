@@ -125,7 +125,6 @@ export default function SignIn() {
           <Box
             component="form"
             onSubmit={handleSubmit}
-            noValidate
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -139,7 +138,7 @@ export default function SignIn() {
                 id="username"
                 type="text"
                 name="username"
-                placeholder="your username"
+                placeholder="Your Username"
                 required
                 fullWidth
                 variant="outlined"
