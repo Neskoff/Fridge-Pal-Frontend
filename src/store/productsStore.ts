@@ -86,13 +86,14 @@ const initialState: ProductsState = {
 export const productSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {},
+  reducers: {
+    updateProductState: (state, action) => {
+      state.products.push(action.payload);
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(getProducts.fulfilled, (state, action) => {
       state.products = action.payload;
-    });
-    builder.addCase(addProduct.fulfilled, (state, action) => {
-      state.products.push(action.payload);
     });
     builder.addCase(updateProductImage.fulfilled, (state, action) => {
       const productIndex = state.products.findIndex(
@@ -107,5 +108,7 @@ export const productSlice = createSlice({
     });
   },
 });
+
+export const {updateProductState} = productSlice.actions;
 
 export default productSlice.reducer;
