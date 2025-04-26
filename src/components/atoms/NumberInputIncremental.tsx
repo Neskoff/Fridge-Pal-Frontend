@@ -11,10 +11,12 @@ type NumberInputIncrementalProps<
 > = {
   field: ControllerRenderProps<TFormValues, TFieldName>;
 };
-export function NumberInputIncremental<
+const NumberInputIncremental = <
   TFormValues extends FieldValues,
   TFieldName extends FieldPath<TFormValues>,
->({ field }: NumberInputIncrementalProps<TFormValues, TFieldName>) {
+>({
+  field,
+}: NumberInputIncrementalProps<TFormValues, TFieldName>) => {
   return (
     <>
       <DialogContentText>Quantity</DialogContentText>{" "}
@@ -25,7 +27,7 @@ export function NumberInputIncremental<
         <TextField
           value={field.value}
           slotProps={{
-            htmlInput: { readOnly: true, style: { textAlign: "center" } },
+            htmlInput: { style: { textAlign: "center" } },
           }}
           sx={{ width: 80 }}
         />
@@ -35,4 +37,6 @@ export function NumberInputIncremental<
       </Box>
     </>
   );
-}
+};
+
+export default NumberInputIncremental;

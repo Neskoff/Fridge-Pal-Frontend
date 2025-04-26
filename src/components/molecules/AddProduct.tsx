@@ -29,7 +29,7 @@ import { DateTimeInput } from "../atoms/DateTimeInput";
 import ValidationErrorAlert from "../atoms/ValidationErrorAlert";
 import { yupResolver } from "@hookform/resolvers/yup";
 import productRequestValidationSchema from "../../validation/productRequestValidationSchema";
-import { NumberInputIncremental } from "../atoms/NumberInputIncremental";
+import NumberInputIncremental from "../atoms/NumberInputIncremental";
 interface AddProductProps {
   open: boolean;
   handleClose: () => void;
