@@ -8,47 +8,33 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { getProducts } from "../../store/productsStore";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import { styled } from "@mui/material/styles";
 import AddProduct from "../molecules/AddProduct";
 import NoProductsFound from "../molecules/NoProductsFound";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import toast from "react-hot-toast";
+import HomeContainer from "../atoms/HomeContainer";
+import { CircularProgress } from "@mui/material";
 
 const Home = () => {
   const productStore = useAppSelector((state) => state.products);
   const dispatch = useAppDispatch();
   const [expired, setExpired] = useState(false);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleClose = () => {
     setOpen(false);
   };
 
   useEffect(() => {
-    dispatch(getProducts(expired));
+    setLoading(true);
+    dispatch(getProducts(expired))
+      .unwrap()
+      .then(() => setLoading(false))
+      .catch((error) => {
+        toast.error(error);
+        setLoading(false);
+      });
   }, [expired]);
-
-  const HomeContainer = styled(Box)(({ theme }) => ({
-    minHeight: "100vh",
-    height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
-    padding: theme.spacing(2),
-    position: "relative",
-    [theme.breakpoints.up("sm")]: {
-      padding: theme.spacing(4),
-    },
-    "&::before": {
-      content: '""',
-      display: "block",
-      position: "fixed",
-      zIndex: -1,
-      inset: 0,
-      backgroundImage:
-        "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
-      backgroundRepeat: "no-repeat",
-      ...theme.applyStyles("dark", {
-        backgroundImage:
-          "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
-      }),
-    },
-  }));
 
   return (
     <HomeContainer>
@@ -71,21 +57,35 @@ const Home = () => {
           <FilterAltIcon /> Filter Expired
         </Button>
       </Box>
-      {(productStore.products.length > 0 && (
+      {(loading && (
         <Box
           sx={{
             display: "flex",
-            flexWrap: "wrap",
-            gap: "2rem",
             justifyContent: "center",
-            marginTop: "2rem",
+            alignItems: "center",
+            width: "100%",
+            height: "5rem",
+            marginTop: "5rem",
           }}
         >
-          {productStore.products.map((product) => (
-            <ProductCard key={`product_${product.id}`} product={product} />
-          ))}
+          <CircularProgress size="5rem" color="inherit" />
         </Box>
-      )) || <NoProductsFound />}
+      )) ||
+        (productStore.products.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "2rem",
+              justifyContent: "center",
+              marginTop: "2rem",
+            }}
+          >
+            {productStore.products.map((product) => (
+              <ProductCard key={`product_${product.id}`} product={product} />
+            ))}
+          </Box>
+        )) || <NoProductsFound />}
       <AddProduct open={open} handleClose={handleClose} />
     </HomeContainer>
   );

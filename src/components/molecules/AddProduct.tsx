@@ -29,6 +29,7 @@ import { DateTimeInput } from "../atoms/DateTimeInput";
 import ValidationErrorAlert from "../atoms/ValidationErrorAlert";
 import { yupResolver } from "@hookform/resolvers/yup";
 import productRequestValidationSchema from "../../validation/productRequestValidationSchema";
+import NumberInputIncremental from "../atoms/NumberInputIncremental";
 interface AddProductProps {
   open: boolean;
   handleClose: () => void;
@@ -184,16 +185,7 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
           <Controller
             name="quantity"
             control={control}
-            render={({ field }) => (
-              <OutlinedInput
-                margin="dense"
-                label="Quantity"
-                placeholder="Quantity"
-                type="number"
-                fullWidth
-                {...field}
-              />
-            )}
+            render={({ field }) => <NumberInputIncremental field={field} />}
           />
           <ValidationErrorAlert error={errors.quantity} />
           <DateTimeInput

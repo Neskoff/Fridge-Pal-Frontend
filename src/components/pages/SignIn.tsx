@@ -30,9 +30,12 @@ export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
+  const [rememberMe, setRememberMe] = useState(
+    localStorage.getItem("rememberMe") !== null,
+  );
 
   const defaultLoginValues: LoginRequest = {
-    username: "",
+    username: localStorage.getItem("rememberMe") || "",
     password: "",
   };
 
@@ -60,7 +63,14 @@ export default function SignIn() {
   const handleLoginSubmit = async (loginRequest: LoginRequest) => {
     dispatch(loginUser(loginRequest))
       .unwrap()
-      .then(() => navigate("/home"))
+      .then(() => {
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", loginRequest.username);
+        } else {
+          localStorage.removeItem("rememberMe");
+        }
+        navigate("/home");
+      })
       .catch((e) => toast.error(e));
   };
 
@@ -138,7 +148,13 @@ export default function SignIn() {
             />
             <ValidationErrorAlert error={errors.password} />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={
+                <Checkbox
+                  checked={rememberMe}
+                  color="primary"
+                  onChange={() => setRememberMe(!rememberMe)}
+                />
+              }
               label="Remember me"
             />
             <ForgotPassword open={open} handleClose={handleClose} />
