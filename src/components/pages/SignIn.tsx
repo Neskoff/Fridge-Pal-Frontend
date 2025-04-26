@@ -22,9 +22,9 @@ import toast from "react-hot-toast";
 import SignInContainer from "../atoms/SignInContainer";
 import StyledCard from "../atoms/StyledCard";
 import { Controller, useForm } from "react-hook-form";
-import { Alert } from "@mui/material";
 import loginRequestValidationSchema from "../../validation/loginRequestValidationSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
+import ValidationErrorAlert from "../atoms/ValidationErrorAlert";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -114,14 +114,10 @@ export default function SignIn() {
                     variant="outlined"
                     {...field}
                   />
-                  {errors.username && (
-                    <Alert severity="error" sx={{ marginTop: "1rem" }}>
-                      {errors.username.message}
-                    </Alert>
-                  )}
                 </FormControl>
               )}
             />
+            <ValidationErrorAlert error={errors.username} />
             <Controller
               name="password"
               control={control}
@@ -137,14 +133,10 @@ export default function SignIn() {
                     variant="outlined"
                     {...field}
                   />
-                  {errors.password && (
-                    <Alert severity="error" sx={{ marginTop: "1rem" }}>
-                      {errors.password.message}
-                    </Alert>
-                  )}
                 </FormControl>
               )}
             />
+            <ValidationErrorAlert error={errors.password} />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"

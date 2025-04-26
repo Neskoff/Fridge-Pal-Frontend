@@ -11,7 +11,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Product } from "../../types/Product";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Chip, CircularProgress } from "@mui/material";
+import { Chip } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { useAppDispatch } from "../../store";
@@ -49,9 +49,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-export default function ProductCard({ product }: ProductCardProps) {
+const ProductCard = ({ product }: ProductCardProps) => {
   const { dateString, timeString } = splitIsoDateTime(product.storedDate);
-  const [imageLoading, setImageLoading] = useState(true);
   const { dateString: endDateString, timeString: endTimeString } =
     splitIsoDateTime(product.expiryDate);
   const [open, setOpen] = React.useState(false);
@@ -88,7 +87,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <Card sx={{ width: 320 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+          <Avatar sx={{ bgcolor: red[500] }} aria-label="avatar">
             I
           </Avatar>
         }
@@ -109,19 +108,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         }
         subheader={`Stored: ${dateString} \n ${timeString}`}
       />
-      {imageLoading && <CircularProgress color="inherit" />}
       <CardMedia
         style={{
-          display: isLoading ? "none" : "flex",
           marginTop: "1rem",
           marginBottom: "1rem",
           borderRadius: "1rem",
         }}
         component="img"
         height="194"
-        onLoad={() => {
-          setImageLoading(false);
-        }}
         image={
           product.productImage?.imageUrl ||
           "https://cdn.apartmenttherapy.info/image/upload/f_auto,q_auto:eco,c_fit,w_730,h_521/k%2FPhoto%2FSeries%2F2019-10--power-hour-instant-pot%2FPower-Hour-Instant-Pot_001-rotated"
@@ -188,4 +182,6 @@ export default function ProductCard({ product }: ProductCardProps) {
       />
     </Card>
   );
-}
+};
+
+export default ProductCard;

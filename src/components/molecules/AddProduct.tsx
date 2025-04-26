@@ -26,6 +26,9 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { ProductRequest } from "../../types/ProductRequest";
 import { DateTimeInput } from "../atoms/DateTimeInput";
+import ValidationErrorAlert from "../atoms/ValidationErrorAlert";
+import { yupResolver } from "@hookform/resolvers/yup";
+import productRequestValidationSchema from "../../validation/productRequestValidationSchema";
 interface AddProductProps {
   open: boolean;
   handleClose: () => void;
@@ -47,8 +50,13 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
     expiryDate: DateTime.now().plus({ days: 1 }),
   };
 
-  const { control, handleSubmit } = useForm<ProductRequest>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ProductRequest>({
     defaultValues: defaultProductValues,
+    resolver: yupResolver(productRequestValidationSchema),
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,10 +125,8 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
           <Controller
             name="name"
             control={control}
-            rules={{ required: true }}
             render={({ field }) => (
               <OutlinedInput
-                required
                 margin="dense"
                 placeholder="Enter Product Name"
                 label="Product Name"
@@ -129,7 +135,7 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
               />
             )}
           />
-
+          <ValidationErrorAlert error={errors.name} />
           <Box>
             <Button variant="outlined" component="label">
               Upload Product Image
@@ -149,7 +155,6 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
           <Controller
             name="type"
             control={control}
-            rules={{ required: true }}
             render={({ field }) => (
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Product Type</InputLabel>
@@ -160,13 +165,13 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
               </FormControl>
             )}
           />
+          <ValidationErrorAlert error={errors.type} />
           <Controller
             name="quantityUnit"
             control={control}
-            rules={{ required: true }}
             render={({ field }) => (
               <FormControl fullWidth margin="dense">
-                <InputLabel>Quantity Type</InputLabel>
+                <InputLabel>Quantity Unit</InputLabel>
                 <Select label="Quantity Unit" {...field}>
                   <MenuItem value="KILOGRAM">Kilogram</MenuItem>
                   <MenuItem value="PIECE">Piece</MenuItem>
@@ -175,13 +180,12 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
               </FormControl>
             )}
           />
+          <ValidationErrorAlert error={errors.quantityUnit} />
           <Controller
             name="quantity"
             control={control}
-            rules={{ required: true }}
             render={({ field }) => (
               <OutlinedInput
-                required
                 margin="dense"
                 label="Quantity"
                 placeholder="Quantity"
@@ -191,6 +195,7 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
               />
             )}
           />
+          <ValidationErrorAlert error={errors.quantity} />
           <DateTimeInput
             name="storedDate"
             control={control}
