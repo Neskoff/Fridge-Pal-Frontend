@@ -21,17 +21,24 @@ const NumberInputIncremental = <
     <>
       <DialogContentText>Quantity</DialogContentText>{" "}
       <Box display="flex" alignItems="center" gap={1}>
-        <IconButton onClick={() => field.onChange(field.value - 1)}>
+        <IconButton onClick={() => field.onChange(Number(field.value) - 1)}>
           <RemoveIcon />
         </IconButton>
         <TextField
           value={field.value}
+          onChange={(e) => {
+            const input = e.target.value;
+            // Allow empty, numeric, and decimal input
+            if (/^-?\d*\.?\d*$/.test(input)) {
+              field.onChange(input);
+            }
+          }}
           slotProps={{
             htmlInput: { style: { textAlign: "center" } },
           }}
           sx={{ width: 80 }}
         />
-        <IconButton onClick={() => field.onChange(field.value + 1)}>
+        <IconButton onClick={() => field.onChange(Number(field.value) + 1)}>
           <AddIcon />
         </IconButton>
       </Box>
