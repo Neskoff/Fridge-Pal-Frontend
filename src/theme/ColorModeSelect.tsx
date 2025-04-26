@@ -7,17 +7,10 @@ import BedtimeIcon from "@mui/icons-material/Bedtime";
 
 export default function ColorModeSelect(props: SelectProps) {
   const { mode, setMode } = useColorScheme();
-  if (!mode) {
-    setMode("dark");
-  }
   return (
     <Select
-      value={mode}
+      value={mode || "dark"}
       onChange={(event) => setMode(event.target.value as "light" | "dark")}
-      SelectDisplayProps={{
-        // @ts-ignore
-        "data-screenshot": "toggle-mode",
-      }}
       {...props}
     >
       <MenuItem value="light">
