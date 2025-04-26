@@ -75,21 +75,21 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
         const formData = new FormData();
         if (imageFile) {
           formData.append("file", imageFile);
+          //Double statements in if and else because react acts wierd
           dispatch(updateProductImage({ productId: res.id, file: formData }))
             .unwrap()
             .then((imageRes) => {
               dispatch(updateProductState(imageRes));
               setIsLoading(false);
               handleClose();
+              toast.success(`Product added successfully!`);
             });
         } else {
           setIsLoading(false);
           dispatch(updateProductState(res));
           handleClose();
+          toast.success(`Product added successfully!`);
         }
-      })
-      .then(() => {
-        toast.success(`Product added successfully!`);
       })
       .catch((err) => {
         setIsLoading(false);
