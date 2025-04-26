@@ -64,6 +64,8 @@ export default function SignIn() {
     dispatch(loginUser(loginRequest))
       .unwrap()
       .then(() => {
+        localStorage.setItem("currentUser", loginRequest.username);
+        toast.success(`User ${loginRequest.username} logged in successfully!`);
         if (rememberMe) {
           localStorage.setItem("rememberMe", loginRequest.username);
         } else {

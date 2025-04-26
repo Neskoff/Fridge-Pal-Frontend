@@ -87,6 +87,7 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
           dispatch(updateProductState(res));
           handleClose();
         }
+        toast.success(`Product added successfully!`);
       })
       .catch((err) => {
         setIsLoading(false);
