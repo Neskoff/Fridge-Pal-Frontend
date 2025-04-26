@@ -19,6 +19,8 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null,
   );
+  const currentUser = localStorage.getItem("currentUser");
+
   const navigate = useNavigate();
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -112,9 +114,27 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  color: "secondary",
+                  paddingX: "1em",
+                  marginTop: "0.3em",
+                  marginBottom: "0.3em",
+                }}
+              >
+                Hello <br/> {currentUser}
+                <hr style={{ marginTop: "0.5rem" }} />
+              </Typography>
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleLogout}>
-                  <Typography sx={{ textAlign: "center" }}>
+                <MenuItem
+                  key={setting}
+                  onClick={handleLogout}
+                  sx={{ justifyContent: "center" }}
+                >
+                  <Typography
+                    sx={{ textAlign: "center", justifyContent: "center" }}
+                  >
                     {setting}
                   </Typography>
                 </MenuItem>

@@ -20,8 +20,7 @@ import ConfirmDelete from "./ConfirmDelete";
 import toast from "react-hot-toast";
 import Box from "@mui/material/Box";
 import splitIsoDateTime from "../../utils/dateUtils";
-import { styled } from "@mui/material/styles";
-import MuiCard from "@mui/material/Card";
+import StyledCard2 from "../atoms/StyledCard2";
 
 interface ProductCardProps {
   product: Product;
@@ -33,21 +32,6 @@ const settings = [
     <DeleteIcon /> &nbsp;Delete
   </Box>,
 ];
-
-const Card = styled(MuiCard)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  padding: theme.spacing(4),
-  [theme.breakpoints.up("sm")]: {
-    maxWidth: "450px",
-  },
-  boxShadow:
-    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
-  ...theme.applyStyles("dark", {
-    boxShadow:
-      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
-  }),
-}));
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { dateString, timeString } = splitIsoDateTime(product.storedDate);
@@ -63,6 +47,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const dispatch = useAppDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
+  const currentUser = localStorage.getItem("currentUser");
 
   const handleProductDelete = () => {
     setIsLoading(true);
@@ -71,6 +56,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       .then(() => {
         setIsLoading(false);
         handleClose();
+        toast.success("Product deleted successfully!");
       })
       .catch((e) => {
         setIsLoading(false);
@@ -84,11 +70,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
     setAnchorElUser(null);
   };
   return (
-    <Card sx={{ width: 320 }}>
+    <StyledCard2 sx={{ width: 320 }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="avatar">
-            I
+            {currentUser?.charAt(0).toUpperCase()}
           </Avatar>
         }
         action={
@@ -180,7 +166,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         handleDelete={handleProductDelete}
         loading={isLoading}
       />
-    </Card>
+    </StyledCard2>
   );
 };
 
