@@ -14,12 +14,10 @@ export const getProducts = createAsyncThunk(
   "products/getProducts",
   async (expired: boolean, { rejectWithValue }) => {
     try {
-      return getProductsApi(expired);
+      return await getProductsApi(expired);
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(
-          error?.response?.data?.message.toString() || error.message,
-        );
+        return rejectWithValue(error?.response?.data?.message || error.message);
       }
       return rejectWithValue("Something went wrong");
     }
@@ -30,12 +28,10 @@ export const addProduct = createAsyncThunk(
   "products/addProduct",
   async (product: ProductRequest, { rejectWithValue }) => {
     try {
-      return addProductApi(product);
+      return await addProductApi(product);
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(
-          error?.response?.data?.message.toString() || error.message,
-        );
+        return rejectWithValue(error?.response?.data?.message || error.message);
       }
       return rejectWithValue("Something went wrong");
     }
@@ -49,9 +45,7 @@ export const updateProductImage = createAsyncThunk(
       return updateProductImageApi(request);
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(
-          error?.response?.data?.message.toString() || error.message,
-        );
+        return rejectWithValue(error?.response?.data?.message || error.message);
       }
       return rejectWithValue("Something went wrong");
     }
@@ -66,9 +60,7 @@ export const deleteProduct = createAsyncThunk(
       return productId;
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(
-          error?.response?.data?.message.toString() || error.message,
-        );
+        return rejectWithValue(error?.response?.data?.message || error.message);
       }
       return rejectWithValue("Something went wrong");
     }
@@ -89,7 +81,7 @@ export const productSlice = createSlice({
   reducers: {
     updateProductState: (state, action) => {
       state.products.push(action.payload);
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getProducts.fulfilled, (state, action) => {
@@ -109,6 +101,6 @@ export const productSlice = createSlice({
   },
 });
 
-export const {updateProductState} = productSlice.actions;
+export const { updateProductState } = productSlice.actions;
 
 export default productSlice.reducer;

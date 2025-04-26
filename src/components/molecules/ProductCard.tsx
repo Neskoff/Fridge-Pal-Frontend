@@ -49,7 +49,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-export default function ProductCard({ product }: ProductCardProps) {
+const ProductCard = ({ product }: ProductCardProps) => {
   const { dateString, timeString } = splitIsoDateTime(product.storedDate);
   const { dateString: endDateString, timeString: endTimeString } =
     splitIsoDateTime(product.expiryDate);
@@ -87,7 +87,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <Card sx={{ width: 320 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+          <Avatar sx={{ bgcolor: red[500] }} aria-label="avatar">
             I
           </Avatar>
         }
@@ -182,4 +182,6 @@ export default function ProductCard({ product }: ProductCardProps) {
       />
     </Card>
   );
-}
+};
+
+export default ProductCard;

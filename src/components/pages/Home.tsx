@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { useEffect } from "react";
 import Navbar from "../molecules/Navbar";
-import ProductCard from "../molecules/Card";
+import ProductCard from "../molecules/ProductCard";
 import { Box } from "@mui/system";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getProducts } from "../../store/productsStore";

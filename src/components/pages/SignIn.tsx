@@ -9,9 +9,6 @@ import FormControl from "@mui/material/FormControl";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
-import { styled } from "@mui/material/styles";
 import ForgotPassword from "../molecules/ForgotPassword";
 import ColorModeSelect from "../../theme/ColorModeSelect";
 import { FridgePalIconWide } from "../../assets/icons/CustomIcons";
@@ -22,53 +19,31 @@ import { isLoggedIn } from "../../hooks/useAuth";
 import { useAppDispatch } from "../../store";
 import { loginUser } from "../../store/userStore";
 import toast from "react-hot-toast";
-
-const Card = styled(MuiCard)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignSelf: "center",
-  width: "100%",
-  padding: theme.spacing(4),
-  gap: theme.spacing(2),
-  margin: "auto",
-  [theme.breakpoints.up("sm")]: {
-    maxWidth: "450px",
-  },
-  boxShadow:
-    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
-  ...theme.applyStyles("dark", {
-    boxShadow:
-      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
-  }),
-}));
-
-const SignInContainer = styled(Stack)(({ theme }) => ({
-  height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
-  minHeight: "100%",
-  padding: theme.spacing(2),
-  [theme.breakpoints.up("sm")]: {
-    padding: theme.spacing(4),
-  },
-  "&::before": {
-    content: '""',
-    display: "block",
-    position: "absolute",
-    zIndex: -1,
-    inset: 0,
-    backgroundImage:
-      "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
-    backgroundRepeat: "no-repeat",
-    ...theme.applyStyles("dark", {
-      backgroundImage:
-        "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
-    }),
-  },
-}));
+import SignInContainer from "../atoms/SignInContainer";
+import StyledCard from "../atoms/StyledCard";
+import { Controller, useForm } from "react-hook-form";
+import loginRequestValidationSchema from "../../validation/loginRequestValidationSchema";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ValidationErrorAlert from "../atoms/ValidationErrorAlert";
 
 export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
+
+  const defaultLoginValues: LoginRequest = {
+    username: "",
+    password: "",
+  };
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginRequest>({
+    defaultValues: defaultLoginValues,
+    resolver: yupResolver(loginRequestValidationSchema),
+  });
 
   if (isLoggedIn()) {
     return <Navigate to="/home" />;
@@ -82,14 +57,7 @@ export default function SignIn() {
     setOpen(false);
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const loginRequest: LoginRequest = {
-      username: data.get("username")?.toString() || "",
-      password: data.get("password")?.toString() || "",
-    };
-
+  const handleLoginSubmit = async (loginRequest: LoginRequest) => {
     dispatch(loginUser(loginRequest))
       .unwrap()
       .then(() => navigate("/home"))
@@ -102,7 +70,7 @@ export default function SignIn() {
         <ColorModeSelect
           sx={{ position: "fixed", top: "1rem", right: "1rem" }}
         />
-        <Card variant="outlined">
+        <StyledCard variant="outlined">
           <Box
             sx={{
               display: "flex",
@@ -124,7 +92,7 @@ export default function SignIn() {
           </Box>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(handleLoginSubmit)}
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -132,32 +100,43 @@ export default function SignIn() {
               gap: 2,
             }}
           >
-            <FormControl>
-              <FormLabel htmlFor="username">Username</FormLabel>
-              <TextField
-                id="username"
-                type="text"
-                name="username"
-                placeholder="Your Username"
-                required
-                fullWidth
-                variant="outlined"
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
-              <TextField
-                name="password"
-                placeholder="••••••"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                autoFocus
-                required
-                fullWidth
-                variant="outlined"
-              />
-            </FormControl>
+            <Controller
+              name="username"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <FormControl>
+                  <FormLabel htmlFor="username">Username</FormLabel>
+                  <TextField
+                    type="text"
+                    placeholder="Your Username"
+                    fullWidth
+                    variant="outlined"
+                    {...field}
+                  />
+                </FormControl>
+              )}
+            />
+            <ValidationErrorAlert error={errors.username} />
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <FormControl>
+                  <FormLabel htmlFor="password">Password</FormLabel>
+                  <TextField
+                    placeholder="••••••"
+                    type="password"
+                    autoComplete="current-password"
+                    autoFocus
+                    fullWidth
+                    variant="outlined"
+                    {...field}
+                  />
+                </FormControl>
+              )}
+            />
+            <ValidationErrorAlert error={errors.password} />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
@@ -176,7 +155,7 @@ export default function SignIn() {
               Forgot your password?
             </Link>
           </Box>
-        </Card>
+        </StyledCard>
       </SignInContainer>
     </>
   );

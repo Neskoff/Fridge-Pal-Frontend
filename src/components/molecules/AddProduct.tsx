@@ -10,7 +10,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { useAppDispatch } from "../../store";
 import {
@@ -22,8 +22,13 @@ import toast from "react-hot-toast";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { DateTime } from "luxon";
-import { PickerValue } from "@mui/x-date-pickers/internals";
 import { Backdrop, CircularProgress } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
+import { ProductRequest } from "../../types/ProductRequest";
+import { DateTimeInput } from "../atoms/DateTimeInput";
+import ValidationErrorAlert from "../atoms/ValidationErrorAlert";
+import { yupResolver } from "@hookform/resolvers/yup";
+import productRequestValidationSchema from "../../validation/productRequestValidationSchema";
 interface AddProductProps {
   open: boolean;
   handleClose: () => void;
@@ -31,16 +36,28 @@ interface AddProductProps {
 
 const AddProduct = ({ open, handleClose }: AddProductProps) => {
   const dispatch = useAppDispatch();
+
   const minDateTime = DateTime.now().plus({ minutes: 5 });
-  const [productName, setProductName] = React.useState("");
-  const [productType, setProductType] = React.useState("");
-  const [quantityType, setQuantityType] = React.useState("");
-  const [quantity, setQuantity] = React.useState(0);
-  const [storedDate, setStoredAt] = React.useState<PickerValue | null>(null);
-  const [expiryDate, setExpiryDate] = React.useState<PickerValue | null>(null);
+  const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const [imageFile, setImageFile] = React.useState<File | null>(null);
+  const defaultProductValues: ProductRequest = {
+    name: "",
+    type: "",
+    quantity: 0,
+    quantityUnit: "",
+    storedDate: DateTime.now(),
+    expiryDate: DateTime.now().plus({ days: 1 }),
+  };
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ProductRequest>({
+    defaultValues: defaultProductValues,
+    resolver: yupResolver(productRequestValidationSchema),
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -48,19 +65,10 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onSubmitAddProduct = (productRequest: ProductRequest) => {
     setIsLoading(true);
-    dispatch(
-      addProduct({
-        name: productName,
-        type: productType,
-        quantityUnit: quantityType,
-        quantity,
-        storedDate: storedDate ? storedDate.toJSDate() : new Date(),
-        expiryDate: expiryDate ? expiryDate.toJSDate() : new Date(),
-      }),
-    )
+    console.log(productRequest);
+    dispatch(addProduct(productRequest))
       .unwrap()
       .then((res) => {
         const formData = new FormData();
@@ -79,7 +87,10 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
           handleClose();
         }
       })
-      .catch((err) => toast.error(err));
+      .catch((err) => {
+        setIsLoading(false);
+        toast.error(err);
+      });
   };
 
   return (
@@ -94,7 +105,7 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
         slotProps={{
           paper: {
             component: "form",
-            onSubmit: handleSubmit,
+            onSubmit: handleSubmit(onSubmitAddProduct),
             sx: { backgroundImage: "none" },
           },
         }}
@@ -111,18 +122,20 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
           <DialogContentText>
             Fill in the product details to add it to your inventory.
           </DialogContentText>
-
-          <OutlinedInput
-            required
-            margin="dense"
-            id="product-name"
-            placeholder="Enter Product Name"
-            name="productName"
-            label="Product Name"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-            fullWidth
+          <Controller
+            name="name"
+            control={control}
+            render={({ field }) => (
+              <OutlinedInput
+                margin="dense"
+                placeholder="Enter Product Name"
+                label="Product Name"
+                fullWidth
+                {...field}
+              />
+            )}
           />
+          <ValidationErrorAlert error={errors.name} />
           <Box>
             <Button variant="outlined" component="label">
               Upload Product Image
@@ -139,58 +152,62 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
               </Typography>
             )}
           </Box>
-          <FormControl fullWidth variant="outlined">
-            <InputLabel>Product Type</InputLabel>
-            <Select
-              value={productType}
-              onChange={(e) => setProductType(e.target.value)}
-              label="Product Type"
-              required
-            >
-              <MenuItem value="FRUITS">Fruit</MenuItem>
-              <MenuItem value="VEGETABLES">Vegetable</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Quantity Type</InputLabel>
-            <Select
-              value={quantityType}
-              onChange={(e) => setQuantityType(e.target.value)}
-              label="Quantity Type"
-              required
-            >
-              <MenuItem value="KILOGRAM">Kilogram</MenuItem>
-              <MenuItem value="PIECE">Piece</MenuItem>
-              <MenuItem value="LITER">Liter</MenuItem>
-            </Select>
-          </FormControl>
-
-          <OutlinedInput
-            required
-            margin="dense"
-            id="quantity"
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth variant="outlined">
+                <InputLabel>Product Type</InputLabel>
+                <Select label="Product Type" {...field}>
+                  <MenuItem value="FRUITS">Fruit</MenuItem>
+                  <MenuItem value="VEGETABLES">Vegetable</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+          />
+          <ValidationErrorAlert error={errors.type} />
+          <Controller
+            name="quantityUnit"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth margin="dense">
+                <InputLabel>Quantity Unit</InputLabel>
+                <Select label="Quantity Unit" {...field}>
+                  <MenuItem value="KILOGRAM">Kilogram</MenuItem>
+                  <MenuItem value="PIECE">Piece</MenuItem>
+                  <MenuItem value="LITER">Liter</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+          />
+          <ValidationErrorAlert error={errors.quantityUnit} />
+          <Controller
             name="quantity"
-            label="Quantity"
-            placeholder="Quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            type="number"
-            fullWidth
+            control={control}
+            render={({ field }) => (
+              <OutlinedInput
+                margin="dense"
+                label="Quantity"
+                placeholder="Quantity"
+                type="number"
+                fullWidth
+                {...field}
+              />
+            )}
+          />
+          <ValidationErrorAlert error={errors.quantity} />
+          <DateTimeInput
+            name="storedDate"
+            control={control}
+            label="Stored Date"
+            maxDate={DateTime.now()}
           />
 
-          <DateTimePicker
-            maxDateTime={DateTime.now()}
-            label="Stored At"
-            value={storedDate}
-            onChange={(date) => setStoredAt(date)}
-          />
-
-          <DateTimePicker
+          <DateTimeInput
+            name="expiryDate"
+            control={control}
             label="Expiry Date"
-            minDateTime={minDateTime}
-            value={expiryDate}
-            onChange={(date) => setExpiryDate(date)}
+            minDate={minDateTime}
           />
         </DialogContent>
 
