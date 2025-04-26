@@ -13,12 +13,17 @@ import FormControl from "@mui/material/FormControl";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { useAppDispatch } from "../../store";
-import { addProduct, updateProductImage } from "../../store/productsStore";
+import {
+  addProduct,
+  updateProductImage,
+  updateProductState,
+} from "../../store/productsStore";
 import toast from "react-hot-toast";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { DateTime } from "luxon";
 import { PickerValue } from "@mui/x-date-pickers/internals";
+import { Backdrop, CircularProgress } from "@mui/material";
 interface AddProductProps {
   open: boolean;
   handleClose: () => void;
@@ -33,6 +38,7 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
   const [quantity, setQuantity] = React.useState(0);
   const [storedDate, setStoredAt] = React.useState<PickerValue | null>(null);
   const [expiryDate, setExpiryDate] = React.useState<PickerValue | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const [imageFile, setImageFile] = React.useState<File | null>(null);
 
@@ -44,6 +50,7 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
     dispatch(
       addProduct({
         name: productName,
@@ -61,16 +68,27 @@ const AddProduct = ({ open, handleClose }: AddProductProps) => {
           formData.append("file", imageFile);
           dispatch(updateProductImage({ productId: res.id, file: formData }))
             .unwrap()
-            .then(() => handleClose());
+            .then((imageRes) => {
+              dispatch(updateProductState(imageRes));
+              setIsLoading(false);
+              handleClose();
+            });
+        } else {
+          setIsLoading(false);
+          dispatch(updateProductState(res));
+          handleClose();
         }
-        handleClose();
       })
       .catch((err) => toast.error(err));
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale="en-GB">
+      <Backdrop sx={() => ({ color: "#fff", zIndex: 999 })} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Dialog
+        sx={{ zIndex: 100 }}
         open={open}
         onClose={handleClose}
         slotProps={{
